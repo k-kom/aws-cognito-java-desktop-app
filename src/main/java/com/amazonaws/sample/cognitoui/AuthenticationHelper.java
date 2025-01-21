@@ -152,7 +152,11 @@ class AuthenticationHelper {
         messageDigest.reset();
         messageDigest.update(salt.toByteArray());
         BigInteger x = new BigInteger(1, messageDigest.digest(userIdHash));
-        BigInteger S = (B.subtract(k.multiply(g.modPow(x, N))).modPow(a.add(u.multiply(x)), N)).mod(N);
+        // (.mod (.modPow (- b (* k (.modPow g (BigInteger. 1 x) N)))
+        //       (+ a (* (BigInteger. 1 u) (BigInteger. 1 x)))
+        //       N)
+        // N)
+        BigInteger S = (B.subtract(k.multiply(g.modPow(x, N))).modPow(a.add(u.multiply(x)),N)).mod(N);
 
         Hkdf hkdf;
         try {
